@@ -1,14 +1,19 @@
 <template>
-  <div id="app">
-    <h1>漢字スライダー</h1>
-    <input
-      id="input"
-      type="text"
-      v-bind:value="$data.displayText"
-      v-on:input="text = $event.target.value"
-      x-model="text"
-    />
-    <vue-slider v-model="value" :disabled="disabled" @change="updateText" />
+  <div>
+    <div id="app">
+      <h1>漢字スライダー</h1>
+      <input
+        id="input"
+        type="text"
+        v-bind:value="$data.displayText"
+        v-on:input="text = $event.target.value"
+        x-model="text"
+      />
+      <vue-slider v-model="value" :disabled="disabled" @change="updateText" />
+      <div id="share">
+        <a v-bind:href="$data.shareURL" target="_blank">ツイートする</a>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -17,6 +22,7 @@ import { Component, Vue } from "vue-property-decorator";
 import VueSlider from "vue-slider-component";
 import "vue-slider-component/theme/material.css";
 import { Histogram } from "@/Histogram";
+import qs from "qs";
 
 const sum = (xs: number[]): number => {
   let sum = 0;
@@ -37,12 +43,15 @@ const avg = (xs: number[]): number =>
     return {
       value: null,
       text: null,
+      originalText: null,
 
       inputRanks: null,
 
       disabled: false,
 
-      histogram: null
+      histogram: null,
+
+      shareURL: null
     };
   },
   async mounted() {
@@ -62,17 +71,16 @@ const avg = (xs: number[]): number =>
         })
     );
 
-    this.$data.text = "餃子の王将";
+    this.$data.originalText = this.$data.text =
+      qs.parse(location.search, { ignoreQueryPrefix: true }).t || "餃子の王将";
   },
   watch: {
-    text(val) {
-      this.$data.displayText = val;
+    text(text) {
+      this.$data.originalText = this.$data.displayText = text;
 
-      const strokes = val
+      const strokes = text
         .split(/(?:)/)
         .map((ch: string) => this.$data.histogram.strokesOfChar(ch));
-
-      console.log(strokes);
 
       let ok = false;
       this.$data.inputRanks = strokes.map((s: number | undefined) => {
@@ -86,9 +94,13 @@ const avg = (xs: number[]): number =>
 
       this.$data.disabled = !ok;
 
-      console.log(this.$data.inputRanks);
-
       this.$data.value = Math.floor(avg(this.$data.inputRanks));
+
+      this.$data.shareURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+        `${this.$data.originalText} 👉 ${text}`
+      )}&url=${encodeURIComponent(location.href)}`;
+
+      history.replaceState(null, "", `?t=${encodeURIComponent(text)}`);
     }
   },
   methods: {
@@ -107,8 +119,6 @@ const avg = (xs: number[]): number =>
             v +
             (this.$data.inputRanks[i] - v) *
               (v < r0 ? v / r0 : (100 - v) / (100 - r0));
-
-          console.log(this.$data.inputRanks[i], r0, v, newV);
 
           const newS = Math.floor(this.$data.histogram.strokes(newV));
           const chars = this.$data.histogram.charsOfStrokes(newS);
@@ -144,9 +154,20 @@ export default class App extends Vue {}
   padding: 0.75em;
 }
 
+#share {
+  margin-top: 3em;
+  text-align: center;
+
+  a {
+    font-size: 200%;
+    text-decoration: none;
+    border-bottom: 1px solid;
+  }
+}
+
 @media (max-width: 768px) {
   #input {
-    font-size: 300%;
+    font-size: 250%;
   }
 }
 </style>

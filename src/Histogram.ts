@@ -62,13 +62,11 @@ export class Histogram {
 
     let acc = 0;
     for (const b of buckets) {
-      console.log(b);
       if (b.strokes < strokes) {
         acc += b.count;
       }
     }
 
-    console.log(acc, total, 100);
     return (acc / total) * 100;
   }
 
