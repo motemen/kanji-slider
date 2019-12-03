@@ -1,65 +1,108 @@
-export interface HistogramEntry {
-  value: number;
+export interface Item {
+  character: string;
+  strokes: number;
+}
+
+export interface Bucket {
+  strokes: number;
   count: number;
 }
 
-export interface Item {
-  name: string;
-  value: number;
-}
-
 export class Histogram {
-  /**
-   * entries: Sorted by value, ascending order
-   */
-  constructor(private readonly entries: HistogramEntry[]) {}
+  readonly buckets: Bucket[];
+  readonly min: number;
+  readonly max: number;
+  readonly total: number;
+  readonly itemsByStrokes: Record<number, Item[]>;
+  readonly itemByCharacter: Record<string, Item>;
 
-  readonly min = this.entries[0].value;
-  readonly max = this.entries[this.entries.length - 1].value;
-  readonly total = this.entries.reduce((sum, e) => sum + e.count, 0);
+  constructor(items: Item[]) {
+    if (items.length === 0) {
+      throw "items should no be empty";
+    }
 
-  rank(value: number): number {
-    const { entries, min, max, total } = this;
+    items = items.sort((a, b) => a.strokes - b.strokes);
 
-    // expand value in range [M, N] to [M-0.5, N+0.5]
+    this.min = items[0].strokes;
+    this.max = items[items.length - 1].strokes;
+    this.total = items.length;
+    this.itemsByStrokes = {};
+    this.itemByCharacter = {};
+
+    const buckets = [];
+    for (const item of items) {
+      if (!this.itemsByStrokes[item.strokes]) {
+        this.itemsByStrokes[item.strokes] = [];
+      }
+      this.itemsByStrokes[item.strokes].push(item);
+      this.itemByCharacter[item.character] = item;
+
+      if (
+        buckets.length === 0 ||
+        buckets[buckets.length - 1].strokes != item.strokes
+      ) {
+        buckets.push({
+          strokes: item.strokes,
+          count: 1
+        });
+      } else {
+        buckets[buckets.length - 1].count++;
+      }
+    }
+    this.buckets = buckets;
+  }
+
+  rank(strokes: number): number {
+    const { buckets, min, max, total } = this;
+
+    // expand strokes in range [M, N] to [M-0.5, N+0.5]
     const center = (min + max) / 2;
     const radius = max - center;
-    value = center + ((value - center) * (radius + 0.5)) / radius;
+    strokes = center + ((strokes - center) * (radius + 0.5)) / radius;
 
     let acc = 0;
-    for (const e of entries) {
-      if (e.value < value) {
-        acc += e.count;
+    for (const b of buckets) {
+      console.log(b);
+      if (b.strokes < strokes) {
+        acc += b.count;
       }
     }
 
+    console.log(acc, total, 100);
     return (acc / total) * 100;
   }
 
-  value(rank: number): number {
-    const { entries, total } = this;
+  strokes(rank: number): number {
+    const { buckets, total } = this;
 
     rank /= 100;
 
-    // if (rank === 0) {
-    //   return entries[0].value;
-    // }
+    if (rank === 0) return this.min;
 
     let cnt = 0;
-    for (let i = 0; i < entries.length; i++) {
-      const e = entries[i];
-      cnt += e.count;
+    for (let i = 0; i < buckets.length; i++) {
+      const b = buckets[i];
+      cnt += b.count;
       if (cnt / total >= rank) {
-        let value = e.value;
-        if (i + 1 < entries.length) {
-          value +=
-            ((entries[i + 1].value - entries[i].value) / entries[i + 1].count) *
+        let strokes = b.strokes;
+        if (i + 1 < buckets.length) {
+          strokes +=
+            ((buckets[i + 1].strokes - buckets[i].strokes) /
+              buckets[i + 1].count) *
             (cnt / total - rank);
         }
-        return value;
+        return strokes;
       }
     }
 
-    return entries[entries.length - 1].value;
+    return this.max;
+  }
+
+  strokesOfChar(ch: string): number | undefined {
+    return this.itemByCharacter[ch] && this.itemByCharacter[ch].strokes;
+  }
+
+  charsOfStrokes(strokes: number): string[] {
+    return this.itemsByStrokes[strokes].map(item => item.character);
   }
 }

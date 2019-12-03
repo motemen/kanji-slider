@@ -8,12 +8,7 @@
       v-on:input="text = $event.target.value"
       x-model="text"
     />
-    <vue-slider
-      v-model="value"
-      :disabled="disabled"
-      _tooltip="none"
-      @change="updateText"
-    />
+    <vue-slider v-model="value" :disabled="disabled" @change="updateText" />
   </div>
 </template>
 
@@ -21,7 +16,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import VueSlider from "vue-slider-component";
 import "vue-slider-component/theme/material.css";
-import { Histogram, HistogramEntry } from "@/Histogram";
+import { Histogram } from "@/Histogram";
 
 const sum = (xs: number[]): number => {
   let sum = 0;
@@ -47,45 +42,37 @@ const avg = (xs: number[]): number =>
 
       disabled: false,
 
-      histogram: null,
-
-      charToStorke: {},
-      strokeToChars: {}
+      histogram: null
     };
   },
   async mounted() {
     const data = await fetch("data.tsv").then(f => f.text());
-    const entries: HistogramEntry[] = [];
-    for (const line of data.split(/\r?\n/)) {
-      const [numString, ch] = line.split(/\t/);
-      const n = parseInt(numString);
-      if (isNaN(n)) continue;
-      if (entries.length === 0 || entries[entries.length - 1].value != n) {
-        entries.push({
-          value: n,
-          count: 1
-        });
-      } else {
-        entries[entries.length - 1].count++;
-      }
-      this.$data.charToStorke[ch] = n;
-      this.$data.strokeToChars[n] = Array.prototype.concat.call(
-        this.$data.strokeToChars[n] || [],
-        ch
-      );
-    }
-    this.$data.histogram = new Histogram(entries);
-    this.$data.text = "人月の神話";
+
+    this.$data.histogram = new Histogram(
+      data
+        .split(/\r?\n/)
+        .splice(1)
+        .filter(line => line.length > 0)
+        .map(line => {
+          const [n, character] = line.split(/\t/);
+          return {
+            character,
+            strokes: parseInt(n)
+          };
+        })
+    );
+
+    this.$data.text = "餃子の王将";
   },
   watch: {
     text(val) {
-      console.log("watch text", val);
-
       this.$data.displayText = val;
 
       const strokes = val
         .split(/(?:)/)
-        .map((ch: string) => this.$data.charToStorke[ch]);
+        .map((ch: string) => this.$data.histogram.strokesOfChar(ch));
+
+      console.log(strokes);
 
       let ok = false;
       this.$data.inputRanks = strokes.map((s: number | undefined) => {
@@ -109,7 +96,7 @@ const avg = (xs: number[]): number =>
       const text = this.$data.text
         .split(/(?:)/)
         .map((ch: string, i: number) => {
-          const s = this.$data.charToStorke[ch];
+          const s = this.$data.histogram.strokesOfChar(ch);
           if (!s) {
             return ch;
           }
@@ -123,8 +110,8 @@ const avg = (xs: number[]): number =>
 
           console.log(this.$data.inputRanks[i], r0, v, newV);
 
-          const newS = Math.floor(this.$data.histogram.value(newV));
-          const chars = this.$data.strokeToChars[newS];
+          const newS = Math.floor(this.$data.histogram.strokes(newV));
+          const chars = this.$data.histogram.charsOfStrokes(newS);
           return chars[Math.floor(Math.random() * chars.length)];
         })
         .join("");
