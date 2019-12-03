@@ -97,7 +97,7 @@ const avg = (xs: number[]): number =>
       this.$data.value = Math.floor(avg(this.$data.inputRanks));
 
       this.$data.shareURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-        `${this.$data.originalText} 👉 ${text}`
+        `${this.$data.originalText} 👉 ${this.$data.displayText}`
       )}&url=${encodeURIComponent(location.href)}`;
 
       history.replaceState(null, "", `?t=${encodeURIComponent(text)}`);
@@ -127,6 +127,10 @@ const avg = (xs: number[]): number =>
         .join("");
 
       this.$data.displayText = text;
+
+      this.$data.shareURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+        `${this.$data.originalText} 👉 ${this.$data.displayText}`
+      )}&url=${encodeURIComponent(location.href)}`;
     }
   }
 })
