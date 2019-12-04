@@ -16,5 +16,7 @@ jobs:
         CI: true
     - if: github.ref == 'refs/heads/master'
       run: |
+        git config --global user.email "motemen@gmail.com"
+        git config --global user.name  "GitHub Actions"
         yarn build
         yarn gh-pages -e "https://$GITHUB_TOKEN@github.com/motemen/kanji-slider.git" -d dist
