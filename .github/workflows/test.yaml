@@ -14,7 +14,7 @@ jobs:
         yarn test
       env:
         CI: true
-    - if: github.ref == "refs/heads/master"
+    - if: github.ref == 'refs/heads/master'
       run: |
         yarn build
         yarn gh-pages -e "https://$GITHUB_TOKEN@github.com/motemen/kanji-slider.git" -d dist
