@@ -134,7 +134,7 @@ const avg = (xs: number[]): number =>
       this.$data.displayText = text;
 
       this.$data.shareURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-        `${this.$data.originalText} 👉 ${this.$data.displayText}`
+        `${this.$data.originalText} 👉 ${this.$data.displayText} / 漢字スライダー`
       )}&url=${encodeURIComponent(location.href)}`;
     }
   }
