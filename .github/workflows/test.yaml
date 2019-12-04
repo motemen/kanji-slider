@@ -19,4 +19,4 @@ jobs:
         git config --global user.email "motemen@gmail.com"
         git config --global user.name  "GitHub Actions"
         yarn build
-        yarn gh-pages -e "https://$GITHUB_TOKEN@github.com/motemen/kanji-slider.git" -d dist
+        yarn gh-pages -e "https://${{ secrets.GITHUB_TOKEN }}@github.com/motemen/kanji-slider.git" -d dist
