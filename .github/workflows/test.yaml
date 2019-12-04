@@ -18,6 +18,6 @@ jobs:
       run: |
         git config --global user.email "motemen@gmail.com"
         git config --global user.name  "GitHub Actions"
-        git remote set-url origin "https://${{ secrets.GITHUB_TOKEN }}@github.com/motemen/kanji-slider.git"
+        git remote set-url origin "https://${{ secrets.GITHUB_TOKEN }}:@github.com/motemen/kanji-slider.git"
         yarn build
         yarn gh-pages -d dist
