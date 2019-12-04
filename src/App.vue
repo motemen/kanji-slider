@@ -9,7 +9,12 @@
         v-on:input="text = $event.target.value"
         x-model="text"
       />
-      <vue-slider v-model="value" :disabled="disabled" @change="updateText" />
+      <vue-slider
+        id="slider"
+        v-model="value"
+        :disabled="disabled"
+        @change="updateText"
+      />
       <div id="share">
         <a v-bind:href="$data.shareURL" target="_blank">ツイートする</a>
       </div>
@@ -163,15 +168,17 @@ export default class App extends Vue {}
   text-align: center;
 
   a {
-    font-size: 200%;
+    font-size: 120%;
     text-decoration: none;
-    border-bottom: 1px solid;
   }
 }
 
 @media (max-width: 768px) {
   #input {
     font-size: 250%;
+  }
+  #slider {
+    margin: 16px;
   }
 }
 </style>
