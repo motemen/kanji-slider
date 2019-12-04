@@ -11,7 +11,7 @@
     "deploy": "yarn gh-pages -d dist"
   },
   "dependencies": {
-    "core-js": "3.4.1",
+    "core-js": "3.4.7",
     "fitty": "2.2.6",
     "qs": "6.9.1",
     "vue": "2.6.10",
