@@ -2,21 +2,22 @@
   <div>
     <div id="app">
       <h1>漢字スライダー</h1>
-      <input
-        id="input"
-        type="text"
-        v-bind:value="$data.displayText"
-        v-on:input="text = $event.target.value"
-        x-model="text"
-      />
+      <div>
+        <input
+          id="input"
+          type="text"
+          v-bind:value="displayText"
+          v-on:input="text = $event.target.value"
+        />
+      </div>
       <vue-slider
         id="slider"
         v-model="value"
-        :disabled="disabled"
-        @change="updateText"
+        v-bind:disabled="disabled"
+        v-on:change="updateText"
       />
       <div id="share">
-        <a v-bind:href="$data.shareURL" target="_blank">ツイートする</a>
+        <a :href="shareURL" target="_blank">ツイートする</a>
       </div>
     </div>
   </div>
@@ -28,6 +29,7 @@ import VueSlider from "vue-slider-component";
 import "vue-slider-component/theme/material.css";
 import { Histogram } from "@/Histogram";
 import qs from "qs";
+import fitty from "fitty";
 
 const sum = (xs: number[]): number => {
   let sum = 0;
@@ -47,8 +49,10 @@ const avg = (xs: number[]): number =>
   data() {
     return {
       value: null,
+
       text: null,
       originalText: null,
+      displayText: null,
 
       inputRanks: null,
 
@@ -56,7 +60,9 @@ const avg = (xs: number[]): number =>
 
       histogram: null,
 
-      shareURL: null
+      shareURL: null,
+
+      fitty: null
     };
   },
   async mounted() {
@@ -78,6 +84,11 @@ const avg = (xs: number[]): number =>
 
     this.$data.originalText = this.$data.text =
       qs.parse(location.search, { ignoreQueryPrefix: true }).t || "餃子の王将";
+
+    this.$data.fitty = fitty(
+      document.querySelector<HTMLInputElement>("#input")!,
+      { multiLine: false }
+    );
   },
   watch: {
     text(text) {
@@ -104,6 +115,8 @@ const avg = (xs: number[]): number =>
       this.$data.shareURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
         `${this.$data.originalText} 👉 ${this.$data.displayText}`
       )}&url=${encodeURIComponent(location.href)}`;
+
+      this.$data.fitty.fit();
 
       history.replaceState(null, "", `?t=${encodeURIComponent(text)}`);
     }
@@ -161,6 +174,8 @@ export default class App extends Vue {}
   width: 100%;
   box-sizing: border-box;
   padding: 0.75em;
+  display: inline-block;
+  white-space: nowrap;
 }
 
 #share {

@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "core-js": "^3.3.2",
+    "fitty": "^2.2.6",
     "qs": "^6.9.1",
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
