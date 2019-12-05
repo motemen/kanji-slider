@@ -11,7 +11,7 @@ jobs:
     - uses: actions/setup-node@v1
     - run: |
         yarn install
-        yarn lint --no-fix
+        yarn lint --no-fix --max-warnings=0
         yarn test
       env:
         CI: true
