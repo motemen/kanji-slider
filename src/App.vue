@@ -85,10 +85,9 @@ const avg = (xs: number[]): number =>
     this.$data.originalText = this.$data.text =
       qs.parse(location.search, { ignoreQueryPrefix: true }).t || "餃子の王将";
 
-    this.$data.fitty = fitty(
-      document.querySelector<HTMLInputElement>("#input")!,
-      { multiLine: false }
-    );
+    const input = document.querySelector<HTMLInputElement>("#input")!;
+    this.$data.fitty = fitty(input, { multiLine: false });
+    input.focus();
   },
   watch: {
     text(text) {
