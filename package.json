@@ -14,7 +14,7 @@
     "core-js": "3.4.7",
     "fitty": "2.2.6",
     "qs": "6.9.1",
-    "vue": "2.6.10",
+    "vue": "2.6.11",
     "vue-class-component": "7.1.0",
     "vue-property-decorator": "8.3.0",
     "vue-slider-component": "3.0.44"
@@ -46,7 +46,7 @@
     "sass": "1.23.7",
     "sass-loader": "8.0.0",
     "typescript": "3.7.3",
-    "vue-template-compiler": "2.6.10"
+    "vue-template-compiler": "2.6.11"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
