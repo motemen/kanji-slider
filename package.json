@@ -16,7 +16,7 @@
     "qs": "6.9.1",
     "vue": "2.6.11",
     "vue-class-component": "7.1.0",
-    "vue-property-decorator": "8.3.0",
+    "vue-property-decorator": "8.5.1",
     "vue-slider-component": "3.0.44"
   },
   "devDependencies": {
