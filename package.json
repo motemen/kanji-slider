@@ -45,7 +45,7 @@
     "prettier": "1.19.1",
     "sass": "1.23.7",
     "sass-loader": "8.0.0",
-    "typescript": "3.7.3",
+    "typescript": "3.9.7",
     "vue-template-compiler": "2.6.11"
   },
   "gitHooks": {
