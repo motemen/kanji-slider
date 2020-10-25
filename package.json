@@ -14,8 +14,8 @@
     "core-js": "3.4.7",
     "fitty": "2.2.6",
     "qs": "6.9.1",
-    "vue": "2.6.11",
-    "vue-class-component": "7.1.0",
+    "vue": "2.6.12",
+    "vue-class-component": "7.2.6",
     "vue-property-decorator": "8.3.0",
     "vue-slider-component": "3.0.44"
   },
@@ -29,14 +29,14 @@
     "@types/sass": "1.16.0",
     "@typescript-eslint/eslint-plugin": "2.11.0",
     "@typescript-eslint/parser": "2.11.0",
-    "@vue/cli-plugin-babel": "4.1.1",
-    "@vue/cli-plugin-eslint": "4.1.1",
-    "@vue/cli-plugin-typescript": "4.1.1",
-    "@vue/cli-plugin-unit-jest": "4.1.1",
-    "@vue/cli-service": "4.1.1",
+    "@vue/cli-plugin-babel": "4.5.8",
+    "@vue/cli-plugin-eslint": "4.5.8",
+    "@vue/cli-plugin-typescript": "4.5.8",
+    "@vue/cli-plugin-unit-jest": "4.5.8",
+    "@vue/cli-service": "4.5.8",
     "@vue/eslint-config-prettier": "6.0.0",
     "@vue/eslint-config-typescript": "5.0.1",
-    "@vue/test-utils": "1.0.0-beta.30",
+    "@vue/test-utils": "1.1.0",
     "eslint": "6.7.2",
     "eslint-plugin-prettier": "3.1.1",
     "eslint-plugin-vue": "6.0.1",
@@ -46,7 +46,7 @@
     "sass": "1.23.7",
     "sass-loader": "8.0.0",
     "typescript": "3.7.3",
-    "vue-template-compiler": "2.6.11"
+    "vue-template-compiler": "2.6.12"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
